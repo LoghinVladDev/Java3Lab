@@ -6,6 +6,14 @@ import Utilities.ProblemRandomiser;
 
 import java.util.Arrays;
 
+/**
+ * StartPoint Class
+ * Contains main()
+ *
+ * [COMPULSORY, OPTIONAL, BONUS]
+ *
+ * @author loghin Vlad
+ */
 public class StartPoint {
     public static void main(String[] args) {
         Problem p = new Problem();
@@ -20,9 +28,10 @@ public class StartPoint {
 
         p.addKnapsack(new Knapsack(20));
 
-        //Problem q = new ProblemRandomiser().generateProblem();
+        p.getKnapsack().clearKnapsack();
+        //p = new ProblemRandomiser().generateProblem();
 
-        System.out.println(p);
+        //System.out.println(p);
 
         Algorithm a = new Greedy(p.getKnapsack(), p.getItems());
         System.out.println(a);
@@ -39,9 +48,15 @@ public class StartPoint {
         analyseRuntimes(a,b,c);
     }
 
-    public static void analyseRuntimes(Algorithm a, Algorithm b, Algorithm c){
-        System.out.println("Greedy runtime : " + a.getRuntime() + "\n");
-        System.out.println("Dynamic runtime : " + b.getRuntime() + "\n" );
-        System.out.println("Graph runtime : " + c.getRuntime() + "\n");
+    /**
+     * analysis method for all three algorithm types
+     * @param greedy pointer to a greedy algorithm
+     * @param dynamic pointer to a dynamic algorithm
+     * @param graph pointer to a graph algorithm
+     */
+    public static void analyseRuntimes(Algorithm greedy, Algorithm dynamic, Algorithm graph){
+        System.out.println("Greedy runtime : " + greedy.getRuntime() + "\n");
+        System.out.println("Dynamic runtime : " + dynamic.getRuntime() + "\n" );
+        System.out.println("Graph runtime : " + graph.getRuntime() + "\n");
     }
 }

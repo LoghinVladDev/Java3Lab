@@ -12,6 +12,15 @@ import javax.print.attribute.HashPrintJobAttributeSet;
 import java.awt.event.KeyAdapter;
 import java.util.*;
 
+/**
+ * Dijkstra Class, Implementation of Algorithm Interface
+ *
+ * Extension required by ShortestPath Algorithm
+ *
+ * [BONUS]
+ *
+ * @author Loghin Vlad
+ */
 public class Dijkstra implements Algorithm{
     private Map<Node<Integer>, Float> costs;
     private Map<Node<Integer>, Node<Integer>> parent;
@@ -22,6 +31,9 @@ public class Dijkstra implements Algorithm{
     private Node<Integer> source;
     private boolean[] solution;
 
+    /**
+     * Internal method that computes maximum costs for all available nodes
+     */
     private void computeDijkstra(){
         Node<Integer> selected = null;
         this.settled.add(source);
@@ -48,6 +60,9 @@ public class Dijkstra implements Algorithm{
         }
     }
 
+    /**
+     * Internal method used to initialize Dijkstra's Algorithm structures
+     */
     private void initializeCosts(){
         for(Edge<Integer, Float> edge : this.G.getE()){
             if(edge.getFrom().getWeight() == Graph.NO_WEIGHT && edge.getFrom().getItemIndex() == 0)
@@ -60,6 +75,12 @@ public class Dijkstra implements Algorithm{
 
     }
 
+    /**
+     * Constructor
+     * @param G Pointer to the Graph to be run through Dijkstra's
+     * @param knapsack Pointer to the Knapsack available
+     * @param items Pointer to the current items
+     */
     public Dijkstra(Graph G, Knapsack knapsack, Item[] items){
         this.G = G;
         this.knapsack = knapsack;
@@ -69,13 +90,12 @@ public class Dijkstra implements Algorithm{
         this.source = this.G.getNode(0, Graph.NO_WEIGHT);
         this.settled = new HashSet<>();
 
-        for(int itemNumber = 0; itemNumber <= this.items.length + 1; itemNumber++){
+        for(int itemNumber = 0; itemNumber <= this.items.length + 1; itemNumber++)
             for(int weight = 0; weight <= this.knapsack.getCapacity(); weight++){
                 Node<Integer> node = this.G.getNodeNoCreate(itemNumber, weight);
                 if(node != null && node.getItemIndex() != 0)
                     this.costs.put(node, Float.MIN_VALUE);
             }
-        }
 
         this.initializeCosts();
         this.computeDijkstra();
@@ -83,39 +103,49 @@ public class Dijkstra implements Algorithm{
 
     }
 
+    /**
+     * Getter for the algorithm's solution
+     * @return pointer to the boolean array containing info whether an item should or shouldn't be taken
+     * @throws RuntimeException if solution was not generated
+     */
     public boolean[] getSolution() throws RuntimeException{
         if(this.solution == null)
             throw new RuntimeException("No solution generated");
         return this.solution;
     }
 
+    /**
+     * Internal method used to compute solution once maximal path has been computed
+     * @param node maximal node from which parsing starts
+     */
     private void parseUp(Node<Integer> node){
         this.solution = new boolean[this.items.length];
-        Node<Integer> parent = null;
+        Node<Integer> parent;
         while(node != null){
             parent = this.parent.get(node);
 
-            if(node.getItemIndex() >= 1 && node.getItemIndex() <= this.items.length && parent.getItemIndex() >= 0 && parent.getItemIndex() <= this.items.length){
-                if(parent.getWeight() != node.getWeight())
+            if(node.getItemIndex() >= 1 && node.getItemIndex() <= this.items.length && parent.getItemIndex() >= 0 && parent.getItemIndex() <= this.items.length)
+                if(!parent.getWeight().equals(node.getWeight()))
                     this.solution[node.getItemIndex()-1] = true;
-            }
 
             node = parent;
         }
     }
 
+    /**
+     * Getter for maximal node
+     * @return Pointer to the node whose back-traced route is maximal
+     */
     public Node<Integer> getMaxValueNode(){
         float maxValue = 0;
         Node<Integer> maxValueNode = null;
 
-        for(Node<Integer> key : this.costs.keySet()){
-            if(key.getItemIndex() == 5) {
+        for(Node<Integer> key : this.costs.keySet())
+            if(key.getItemIndex() == 5)
                 if (maxValue < this.costs.get(key)) {
                     maxValue = this.costs.get(key);
                     maxValueNode = key;
                 }
-            }
-        }
         return maxValueNode;
     }
 
