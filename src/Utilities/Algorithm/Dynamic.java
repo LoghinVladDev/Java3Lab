@@ -54,6 +54,8 @@ public class Dynamic implements Algorithm {
 
         this.buildTable();
 
+        this.printTable();
+
         for(Item item : this.itemSets[this.knapsack.getCapacity()].getItems()){
             if(item != null)
                 this.knapsack.addItem(item);

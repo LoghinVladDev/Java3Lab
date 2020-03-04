@@ -1,6 +1,4 @@
 package Utilities.Graph;
 
-public class Edge {
-    Node from;
-    Node to;
+public class Edge <T> {
 }

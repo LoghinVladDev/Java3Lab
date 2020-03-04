@@ -1,9 +1,15 @@
 package Utilities.Graph;
 
-public class Node <T> {
-    T object;
+import java.util.Objects;
 
-    public Node(T object){
-        this.object = object;
+public class Node <T> {
+    private T weight;
+
+    public Node(T weight){
+        this.weight = weight;
+    }
+
+    public T getWeight(){
+        return this.weight;
     }
 }
