@@ -13,12 +13,27 @@ import java.util.TreeSet;
 public class Graph {
     private static final int NO_WEIGHT = -1;
     private Set<Pair<Integer, Set<Node<Integer>>>>V;
-    private Set<Edge<Integer>> E;
+    private Set<Edge<Integer, Float>> E;
 
     private int itemCount;
     private int knapsackCapacity;
     private Item[] items;
     private Knapsack knapsack;
+
+    public Set<Pair<Integer, Set<Node<Integer>>>> getV(){
+        return this.V;
+    }
+
+    public Set<Edge<Integer,Float>> getE(){
+        return this.E;
+    }
+
+    public Set<Node<Integer>> getVSubset(int i) throws RuntimeException{
+        for( Pair<Integer, Set<Node<Integer>>> subset : this.V )
+            if(subset.getKey() == i)
+                return subset.getValue();
+        throw new RuntimeException("Subset V of i does not exist");
+    }
 
     private void initialiseSets(int itemCount){
         for( int subsetIndex = 0; subsetIndex <= itemCount + 1; subsetIndex++ ){
@@ -62,5 +77,25 @@ public class Graph {
                 return;
             }
         throw new RuntimeException("No such V^i set");
+    }
+
+    public void addEdge(Edge<Integer, Float> edge){
+        this.E.add(edge);
+    }
+
+    public void createEdge(Node<Integer> from, Node<Integer> to, float cost){
+        this.E.add(new Edge<Integer, Float>(from, to, cost));
+    }
+
+    public boolean edgeExists(Edge<Integer, Float> edge ){
+        return this.E.contains(edge);
+    }
+
+    public boolean nodeExists(int item, Node<Integer> node){
+        for( Pair<Integer, Set<Node<Integer>>> subset : this.V )
+            if(subset.getKey() == item)
+                if(subset.getValue().contains(node))
+                    return true;
+        return false;
     }
 }
