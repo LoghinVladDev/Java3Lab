@@ -42,7 +42,6 @@ public class Graph {
 
     private void initialiseSets(int itemCount){
         for( int subsetIndex = itemCount + 1; subsetIndex >= 0; subsetIndex-- ){
-            System.out.println("Created set " + subsetIndex);
             this.V.add(new Pair<>(subsetIndex, new TreeSet<>(comparatorWeightSet)));
         }
 
@@ -53,7 +52,6 @@ public class Graph {
                 subset.getValue().add(new Node<Integer>( itemCount + 1, NO_WEIGHT));
         }
 
-        System.out.println("Nodes thus far : " + this.V.toString());
     }
 
     public Graph(int itemCount){
@@ -120,6 +118,23 @@ public class Graph {
                 this.addNode(item, newNode);
                 return newNode;
             }
+        return null;
+    }
+
+    public Node<Integer> getNodeNoCreate(int item, int weight){
+        for( Pair<Integer, SortedSet<Node<Integer>>> subset : this.V )
+            if(subset.getKey() == item)
+                for( Node<Integer> node : subset.getValue() )
+                    if ( node.getWeight() == weight )
+                        return node;
+        return null;
+    }
+
+    public Edge<Integer, Float> getEdge(Node<Integer> from, Node<Integer> to){
+        for(Edge<Integer, Float> edge : this.E){
+            if(edge.getFrom().equals(from) && edge.getTo().equals(to))
+                return edge;
+        }
         return null;
     }
 }

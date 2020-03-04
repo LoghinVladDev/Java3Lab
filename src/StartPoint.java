@@ -1,11 +1,10 @@
 import KnapsackItems.*;
 import ProblemObjects.Knapsack;
-import Utilities.Algorithm.Algorithm;
-import Utilities.Algorithm.Dynamic;
-import Utilities.Algorithm.Greedy;
-import Utilities.Algorithm.ShortestPath;
+import Utilities.Algorithm.*;
 import Utilities.Problem;
 import Utilities.ProblemRandomiser;
+
+import java.util.Arrays;
 
 public class StartPoint {
     public static void main(String[] args) {
@@ -33,7 +32,16 @@ public class StartPoint {
         Algorithm b = new Dynamic(p.getKnapsack(), p.getItems());
         System.out.println(b);
 
-        ShortestPath c = new ShortestPath(p.getKnapsack(), p.getItems());
-        c.printAdjacencyList();
+        Algorithm c = new ShortestPath(p.getKnapsack(), p.getItems());
+
+        System.out.println(c);
+
+        analyseRuntimes(a,b,c);
+    }
+
+    public static void analyseRuntimes(Algorithm a, Algorithm b, Algorithm c){
+        System.out.println("Greedy runtime : " + a.getRuntime() + "\n");
+        System.out.println("Dynamic runtime : " + b.getRuntime() + "\n" );
+        System.out.println("Graph runtime : " + c.getRuntime() + "\n");
     }
 }

@@ -16,6 +16,7 @@ public class ShortestPath implements Algorithm{
     private Item[] items;
     private long nanoStartTime;
     private long nanoEndTime;
+    private boolean[] solution;
 
     public ShortestPath(){
         G = null;
@@ -28,6 +29,17 @@ public class ShortestPath implements Algorithm{
         this.items = items;
 
         this.generateGraph();
+        Dijkstra d = new Dijkstra(this.G, this.knapsack, this.items);
+
+        this.solution = d.getSolution();
+
+        this.nanoEndTime = System.nanoTime();
+    }
+
+    public Graph getGraph() throws RuntimeException{
+        if(this.G == null)
+            throw new RuntimeException("No Graph Generated");
+        return this.G;
     }
 
     private void generateGraph(){
@@ -81,22 +93,18 @@ public class ShortestPath implements Algorithm{
 
     private void generateGraphEdges(){
         for( Pair<Integer, SortedSet<Node<Integer>>> subset : this.G.getV()){
-            System.out.println("Checking node of subset " + subset.getKey());
             if(subset.getKey() == 0){
                 for( Node<Integer> node : subset.getValue() ){
-                    System.out.println("\tChecking for node s");
                     this.addEdgeSetForItemI(1, node);
                 }
             }
             else if(subset.getKey() < this.items.length){
                 for( Node<Integer> node : subset.getValue() ){
-                    System.out.println("Checking for node " + node.getWeight() + " of subset " + subset.getKey());
                     this.addEdgeSetForItemI(subset.getKey() + 1, node);
                 }
             }
             else if(subset.getKey() == this.items.length){
                 for( Node<Integer> node : subset.getValue() ){
-                    System.out.println("\tChecking for node t");
                     this.G.addEdge(new Edge<Integer,Float> (node, this.G.getNode(6, Graph.NO_WEIGHT), 0f));
                     this.G.getAdjacencyMap().computeIfAbsent(node, k->new ArrayList<>());
                     this.G.getAdjacencyMap().get(node).add(this.G.getNode(6, Graph.NO_WEIGHT));
@@ -105,7 +113,6 @@ public class ShortestPath implements Algorithm{
         }
         this.G.getAdjacencyMap().computeIfAbsent(this.G.getNode(6, Graph.NO_WEIGHT), k->new ArrayList<>());
 
-        this.nanoEndTime = System.nanoTime();
     }
 
     public void printAdjacencyList(){
@@ -133,5 +140,15 @@ public class ShortestPath implements Algorithm{
 
     public long getNanoRuntime(){
         return this.nanoEndTime - this.nanoStartTime;
+    }
+
+    public String toString(){
+        String result = "Cost-Wise Graph Solution :\ncapacity of the knapsack = "
+                + this.knapsack.getCapacity()
+                + "\nitems in knapsack : \n";
+        for(int i = 0; i < this.items.length; i++)
+            if(this.solution[i])
+                result += "\t" + this.items[i].toString() + "\n";
+        return result;
     }
 }
