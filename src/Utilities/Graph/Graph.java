@@ -42,9 +42,9 @@ public class Graph {
 
         for (Pair<Integer, Set<Node<Integer>>> subset : this.V) {
             if (subset.getKey() == 0)
-                subset.getValue().add(new Node<Integer>(NO_WEIGHT));
+                subset.getValue().add(new Node<Integer>(0,NO_WEIGHT));
             if (subset.getKey() == itemCount + 1)
-                subset.getValue().add(new Node<Integer>(NO_WEIGHT));
+                subset.getValue().add(new Node<Integer>( itemCount + 1, NO_WEIGHT));
         }
 
         this.itemCount = itemCount;
@@ -64,7 +64,7 @@ public class Graph {
     public void addNode(int item, int weight) throws RuntimeException{
         for( Pair<Integer, Set<Node<Integer>>> subset : this.V )
             if(subset.getKey() == item) {
-                subset.getValue().add(new Node<Integer>(weight));
+                subset.getValue().add(new Node<Integer>(item,weight));
                 return;
             }
         throw new RuntimeException("No such V^i set");
@@ -97,5 +97,18 @@ public class Graph {
                 if(subset.getValue().contains(node))
                     return true;
         return false;
+    }
+
+    public Node<Integer> getNode(int item, int weight){
+        for( Pair<Integer, Set<Node<Integer>>> subset : this.V )
+            if(subset.getKey() == item){
+                for( Node<Integer> node : subset.getValue() )
+                    if ( node.getWeight() == weight )
+                        return node;
+                Node<Integer> newNode = new Node<Integer>(item, weight);
+                this.addNode(item, newNode);
+                return newNode;
+            }
+        return null;
     }
 }

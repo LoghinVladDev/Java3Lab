@@ -34,4 +34,10 @@ public class Edge <T,U> {
     public void setTo(Node<T> to){
         this.to = to;
     }
+
+    public boolean equals (Edge<T,U> edge){
+        return this.from.equals(edge.from) &&
+               this.to.equals(edge.to) &&
+               this.cost == edge.cost;
+    }
 }

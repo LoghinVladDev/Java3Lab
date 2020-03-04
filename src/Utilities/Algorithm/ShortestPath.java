@@ -51,34 +51,34 @@ public class ShortestPath {
     }
 
     private void addEdgeSetForItemI(int item, Node<Integer> from){
-        Node<Integer> nextItemNode = new Node<>(0);
+        Node<Integer> nextItemNode = this.G.getNode(item, 0);
         this.G.addEdge(new Edge<Integer, Float>(
                 from,
                 nextItemNode,
                 0f
             )
         );
-        this.G.addNode(item, nextItemNode);
 
-        nextItemNode = new Node<> (this.items[item].getWeight());
+        nextItemNode = this.G.getNode(item, this.items[item].getWeight());
         this.G.addEdge(new Edge<Integer, Float>(
                 from,
                 nextItemNode,
                 this.items[item].getValue()
             )
         );
-
-        this.G.addNode(item, nextItemNode);
     }
 
     private void generateGraphEdges(){
         for( Pair<Integer, Set<Node<Integer>>> subset : this.G.getV()){
-            Node<Integer> nextItemNode;
-            switch(subset.getKey()){
-                case 0:
-                    for( Node<Integer> node : subset.getValue()){
-                        this.addEdgeSetForItemI(1, node);
-                    }
+            if(subset.getKey() == 0){
+                for( Node<Integer> node : subset.getValue() ){
+                    this.addEdgeSetForItemI(0, node);
+                }
+            }
+            else if(subset.getKey() == this.items.length){
+                for( Node<Integer> node : subset.getValue() ){
+                    this.addEdgeSetForItemI(subset.getKey(), node);
+                }
             }
         }
     }
