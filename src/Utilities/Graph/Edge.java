@@ -40,4 +40,8 @@ public class Edge <T,U> {
                this.to.equals(edge.to) &&
                this.cost == edge.cost;
     }
+
+    public String toString(){
+        return "(Edge from " + this.from + " to " + this.to + " with cost " + this.cost + ")";
+    }
 }

@@ -3,6 +3,7 @@ import ProblemObjects.Knapsack;
 import Utilities.Algorithm.Algorithm;
 import Utilities.Algorithm.Dynamic;
 import Utilities.Algorithm.Greedy;
+import Utilities.Algorithm.ShortestPath;
 import Utilities.Problem;
 import Utilities.ProblemRandomiser;
 
@@ -32,5 +33,7 @@ public class StartPoint {
         Algorithm b = new Dynamic(p.getKnapsack(), p.getItems());
         System.out.println(b);
 
+        ShortestPath c = new ShortestPath(p.getKnapsack(), p.getItems());
+        c.printAdjacencyList();
     }
 }

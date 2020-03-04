@@ -5,64 +5,75 @@ import ProblemObjects.Knapsack;
 import javafx.util.Pair;
 
 import javax.swing.tree.TreeNode;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
-import java.util.TreeSet;
+import java.net.SocketTimeoutException;
+import java.util.*;
 
 public class Graph {
-    private static final int NO_WEIGHT = -1;
-    private Set<Pair<Integer, Set<Node<Integer>>>>V;
+    public static final int NO_WEIGHT = -1;
+    private SortedSet<Pair<Integer, SortedSet<Node<Integer>>>> V;
     private Set<Edge<Integer, Float>> E;
+    private Map<Node<Integer>, List<Node<Integer>>> adjacencyMap;
 
-    private int itemCount;
     private int knapsackCapacity;
     private Item[] items;
     private Knapsack knapsack;
 
-    public Set<Pair<Integer, Set<Node<Integer>>>> getV(){
+    private Comparator<Pair<Integer, SortedSet<Node<Integer>>>> comparatorItemSet = Comparator.comparing(Pair::getKey);
+    private Comparator<Node<Integer>> comparatorWeightSet = Comparator.comparing(Node::getWeight);
+
+    public SortedSet<Pair<Integer, SortedSet<Node<Integer>>>> getV(){
         return this.V;
+    }
+
+    public Map<Node<Integer>, List<Node<Integer>>> getAdjacencyMap(){
+        return this.adjacencyMap;
     }
 
     public Set<Edge<Integer,Float>> getE(){
         return this.E;
     }
 
-    public Set<Node<Integer>> getVSubset(int i) throws RuntimeException{
-        for( Pair<Integer, Set<Node<Integer>>> subset : this.V )
+    public SortedSet<Node<Integer>> getVSubset(int i) throws RuntimeException{
+        for( Pair<Integer, SortedSet<Node<Integer>>> subset : this.V )
             if(subset.getKey() == i)
                 return subset.getValue();
         throw new RuntimeException("Subset V of i does not exist");
     }
 
     private void initialiseSets(int itemCount){
-        for( int subsetIndex = 0; subsetIndex <= itemCount + 1; subsetIndex++ ){
-            this.V.add(new Pair<>(subsetIndex, new HashSet<>()));
+        for( int subsetIndex = itemCount + 1; subsetIndex >= 0; subsetIndex-- ){
+            System.out.println("Created set " + subsetIndex);
+            this.V.add(new Pair<>(subsetIndex, new TreeSet<>(comparatorWeightSet)));
         }
 
-        for (Pair<Integer, Set<Node<Integer>>> subset : this.V) {
+        for (Pair<Integer, SortedSet<Node<Integer>>> subset : this.V) {
             if (subset.getKey() == 0)
                 subset.getValue().add(new Node<Integer>(0,NO_WEIGHT));
             if (subset.getKey() == itemCount + 1)
                 subset.getValue().add(new Node<Integer>( itemCount + 1, NO_WEIGHT));
         }
 
-        this.itemCount = itemCount;
+        System.out.println("Nodes thus far : " + this.V.toString());
     }
 
     public Graph(int itemCount){
-        V = new HashSet<>();
+        V = new TreeSet<>(comparatorItemSet);
         E = new HashSet<>();
+        this.adjacencyMap = new HashMap<>();
 
         this.initialiseSets(itemCount);
     }
 
     public Graph(Item[] items, Knapsack knapsack){
+        V = new TreeSet<>(comparatorItemSet);
+        E = new HashSet<>();
+        this.adjacencyMap = new HashMap<>();
+
         this.initialiseSets(items.length);
     }
 
     public void addNode(int item, int weight) throws RuntimeException{
-        for( Pair<Integer, Set<Node<Integer>>> subset : this.V )
+        for( Pair<Integer, SortedSet<Node<Integer>>> subset : this.V )
             if(subset.getKey() == item) {
                 subset.getValue().add(new Node<Integer>(item,weight));
                 return;
@@ -71,7 +82,7 @@ public class Graph {
     }
 
     public void addNode( int item, Node<Integer> node ) throws RuntimeException{
-        for( Pair<Integer, Set<Node<Integer>>> subset : this.V )
+        for( Pair<Integer, SortedSet<Node<Integer>>> subset : this.V )
             if(subset.getKey() == item) {
                 subset.getValue().add(node);
                 return;
@@ -92,7 +103,7 @@ public class Graph {
     }
 
     public boolean nodeExists(int item, Node<Integer> node){
-        for( Pair<Integer, Set<Node<Integer>>> subset : this.V )
+        for( Pair<Integer, SortedSet<Node<Integer>>> subset : this.V )
             if(subset.getKey() == item)
                 if(subset.getValue().contains(node))
                     return true;
@@ -100,7 +111,7 @@ public class Graph {
     }
 
     public Node<Integer> getNode(int item, int weight){
-        for( Pair<Integer, Set<Node<Integer>>> subset : this.V )
+        for( Pair<Integer, SortedSet<Node<Integer>>> subset : this.V )
             if(subset.getKey() == item){
                 for( Node<Integer> node : subset.getValue() )
                     if ( node.getWeight() == weight )

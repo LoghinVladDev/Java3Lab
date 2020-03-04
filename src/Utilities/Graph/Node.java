@@ -20,4 +20,8 @@ public class Node <T> {
     public boolean equals(Node<T> node){
         return this.weight.equals(node.weight) && this.itemIndex == node.itemIndex;
     }
+
+    public String toString(){
+        return "(Node of item " + this.itemIndex + " and weight " + this.weight + ")";
+    }
 }
