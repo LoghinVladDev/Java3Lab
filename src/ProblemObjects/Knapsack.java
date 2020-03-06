@@ -2,7 +2,9 @@ package ProblemObjects;
 
 import KnapsackItems.Item;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 
 /**
  * Knapsack Class
@@ -88,6 +90,14 @@ public class Knapsack{
         this.items[this.itemsCount++] = item;
     }
 
+    Comparator<Item>  itemComparator = Comparator.comparing(Item::getName);
+
+    private ArrayList<Item> getListOfItems(){
+        ArrayList<Item> result = new ArrayList<>(Arrays.asList(this.items));
+        result.sort(itemComparator);
+        return result;
+    }
+
     /**
      * Overridden toString method
      * @return String interpretation of the object
@@ -101,7 +111,8 @@ public class Knapsack{
         result = result + "\nitems in knapsack :\n";
 
         this.settleItemsArray();
-        for(Item item : this.items)
+        ArrayList<Item> sortedItems = this.getListOfItems();
+        for(Item item : sortedItems)
             result = result + "\t" + item.toString() + "\n";
 
         return result;

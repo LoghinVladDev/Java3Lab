@@ -16,6 +16,7 @@ import java.util.Arrays;
  */
 public class StartPoint {
     public static void main(String[] args) {
+        ///COMPULSORY
         Problem p = new Problem();
 
         p.addItems(
@@ -29,10 +30,10 @@ public class StartPoint {
         p.addKnapsack(new Knapsack(20));
 
         p.getKnapsack().clearKnapsack();
-        //p = new ProblemRandomiser().generateProblem();
+        p = new ProblemRandomiser().generateProblem();
 
         //System.out.println(p);
-
+        ///OPTIONAL
         Algorithm a = new Greedy(p.getKnapsack(), p.getItems());
         System.out.println(a);
 
@@ -40,7 +41,7 @@ public class StartPoint {
 
         Algorithm b = new Dynamic(p.getKnapsack(), p.getItems());
         System.out.println(b);
-
+        ///BONUS
         Algorithm c = new ShortestPath(p.getKnapsack(), p.getItems());
 
         System.out.println(c);

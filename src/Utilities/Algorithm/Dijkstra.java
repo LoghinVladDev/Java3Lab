@@ -35,6 +35,30 @@ public class Dijkstra implements Algorithm{
      * Internal method that computes maximum costs for all available nodes
      */
     private void computeDijkstra(){
+        int repCount = 0;
+        boolean moreItemsThanCapacity = false;
+
+        Map<Pair<Node<Integer>, Node<Integer>>, Edge<Integer,Float>> edgeMap = new HashMap<>();
+
+        for(Edge<Integer,Float> edge : this.G.getE())
+            edgeMap.put(new Pair<>(edge.getFrom(), edge.getTo()), edge);
+
+        int maxWeight = 0;
+        for(int i = 0; i < this.items.length; i++)
+            if(this.items[i].getWeight() > maxWeight)
+                maxWeight = this.items[i].getWeight();
+
+        int[] remainingMaxWeight = new int[this.items.length + 1];
+        for(int i = this.items.length - 1; i >= 0; i--)
+        {
+            for(int j = i; j < this.items.length; j++)
+                remainingMaxWeight[i] += this.items[j].getWeight();
+        }
+
+        if(remainingMaxWeight[0] > this.knapsack.getCapacity())
+            moreItemsThanCapacity = true;
+
+        Node<Integer> previouslySelected = null;
         Node<Integer> selected = null;
         this.settled.add(source);
         while(true){
@@ -45,19 +69,38 @@ public class Dijkstra implements Algorithm{
                     selected = key;
                 }
             }
+
+            if(previouslySelected != null)
+                if(previouslySelected.equals(selected))
+                    break;
+
+            if(this.knapsack.getCapacity() > remainingMaxWeight[selected.getItemIndex()] + selected.getWeight()
+                    && selected.getItemIndex() < this.items.length
+                    && moreItemsThanCapacity ){
+
+                settled.add(selected);
+                previouslySelected = selected;
+                System.out.println("Useless node " + selected);
+                continue;
+            }
+
             if(maximumDistance != Float.MIN_VALUE){
+                //System.out.println("In selected node " + selected.getItemIndex() + " " + selected.getWeight());
                 settled.add(selected);
                 for(Node<Integer> key : this.costs.keySet()){
-                    Edge<Integer, Float> edge = this.G.getEdge(selected, key);
-                    if(edge != null)
+                    Edge<Integer, Float> edge = edgeMap.get(new Pair<>(selected,key));
+                    if(edge != null){
+                        //System.out.println("In node check " + (repCount++) );
                         if(!settled.contains(key) && this.costs.get(key) < this.costs.get(selected) + edge.getCost()){
                             this.costs.put(key, this.costs.get(selected) + edge.getCost());
                             this.parent.put(key, selected);
                         }
+                    }
                 }
             }
             else break;
         }
+        //System.out.println(Arrays.toString(remainingMaxWeight));
     }
 
     /**
@@ -141,7 +184,7 @@ public class Dijkstra implements Algorithm{
         Node<Integer> maxValueNode = null;
 
         for(Node<Integer> key : this.costs.keySet())
-            if(key.getItemIndex() == 5)
+            if(key.getItemIndex() == this.items.length)
                 if (maxValue < this.costs.get(key)) {
                     maxValue = this.costs.get(key);
                     maxValueNode = key;

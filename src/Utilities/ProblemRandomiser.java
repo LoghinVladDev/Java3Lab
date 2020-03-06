@@ -15,12 +15,12 @@ import ProblemObjects.Knapsack;
  * @author Loghin Vlad
  */
 public class ProblemRandomiser {
-    private static final int DEFAULT_MAX_ITEMS_COUNT = 20;
+    private static final int DEFAULT_MAX_ITEMS_COUNT = 100;
     private static final int DEFAULT_MAX_BOOK_PAGE_COUNT = 1000;
     private static final int DEFAULT_MAX_NAME_LENGTH = 70;
     private static final int DEFAULT_MAX_ITEM_WEIGHT = 10;
     private static final float DEFAULT_MAX_ITEM_VALUE = 50;
-    private static final int DEFAULT_MAX_KNAPSACK_CAPACITY = 50;
+    private static final int DEFAULT_MAX_KNAPSACK_CAPACITY = 1000;
 
     private int maxItemsCount;
     private int maxNameLength;

@@ -9,7 +9,9 @@ package KnapsackItems;
  */
 public interface Item {
     boolean equals(Item obj);
-    float getProfitFactor();
+    default float getProfitFactor(){
+        return this.getValue() / this.getWeight();
+    }
     float getValue();
     int getWeight();
     String getName();

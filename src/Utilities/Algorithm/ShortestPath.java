@@ -48,6 +48,8 @@ public class ShortestPath implements Algorithm{
 
         this.solution = d.getSolution();
 
+        this.applySolution();
+
         this.nanoEndTime = System.nanoTime();
     }
 
@@ -106,7 +108,7 @@ public class ShortestPath implements Algorithm{
     private void addEdgeSetForItemI(int item, Node<Integer> from){
         this.G.getAdjacencyMap().computeIfAbsent(from, k->new ArrayList<>());
 
-        if(from.getWeight() == -1) {
+        if(from.getWeight() == Graph.NO_WEIGHT) {
             Node<Integer> nextItemNode = this.G.getNode(item, 0);
             this.G.addEdge(new Edge<>(from, nextItemNode, 0f));
             this.G.getAdjacencyMap().get(from).add(nextItemNode);
@@ -189,17 +191,25 @@ public class ShortestPath implements Algorithm{
         return this.nanoEndTime - this.nanoStartTime;
     }
 
+    private void applySolution(){
+
+        this.knapsack.clearKnapsack();
+        for(int i = 0; i < this.items.length; i++)
+            if(this.solution[i])
+                knapsack.addItem(this.items[i]);
+    }
+
     /**
      * Overridden toString method
      * @return String interpretation of the current object
      */
     public String toString(){
-        String result = "Cost-Wise Graph Solution :\ncapacity of the knapsack = "
-                + this.knapsack.getCapacity()
-                + "\nitems in knapsack : \n";
-        for(int i = 0; i < this.items.length; i++)
-            if(this.solution[i])
-                result += "\t" + this.items[i].toString() + "\n";
+        String result = "Cost-Wise Graph Solution :\n"
+                + this.knapsack
+                + "\nAlgorithm ran for "
+                + this.getRuntime()
+                + " seconds";
+
         return result;
     }
 }
